@@ -198,12 +198,11 @@ function searchWith (arr, filter) {
     const arrayHandler = (arr) => {
         arr.filter((el) => {
             if (isObject(el)) return objectHandler(el);
-            else {
-                const elText = el.toString().toLowerCase();
-                if (elText.includes(lCaseFilter)) {
-                    if(filtered.includes(el)) return;
-                    filtered.push(el);
-                }
+
+            const elText = el.toString().toLowerCase();
+            if (elText.includes(lCaseFilter)) {
+                if(filtered.includes(el)) return;
+                filtered.push(el);
             }
             
         })
