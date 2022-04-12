@@ -53,45 +53,47 @@
 //     console.log(filtered);
 // }
 
-const minLen = 2;
 
-const isLongEnough = (filter) => filter.toString().length >= minLen;
-const isSimple = (obj) => typeof obj !== 'object';
-const isArr = (obj) => Array.isArray(obj);
-const isObj = (obj) => typeof obj === 'object';
+const minFilterTextLength = 2;
+const checkIfHasGivenLength = (obj, minLen) => obj.toString().length >= minLen;
+const checkIfTypeIsSimple = (obj) => typeof obj !== 'object';
+const checkIfTypeIsArray = (obj) => Array.isArray(obj);
+const checkIfTypeIsObject = (obj) => typeof obj === 'object';
+const convertToString = (obj) => obj += "";
+const checkIfIsSearchedValue = (obj, filter) => convertToString(obj).includes(convertToString(filter));
+const getObjectValues = (obj) => Object.values(obj);
 
 
-const stringOf = (str) => str.toString().toLowerCase();
 
-const handleObject = (obj) => {
-    const vals = Object.entries(obj);
-    return vals;
+// RN only main objects in main array get filtered, if type of value !simple it doesn't work
+
+
+
+const objectHandler = (obj, filter) => {
+    const vals = getObjectValues(obj);
+    vals.forEach((val) =>{
+        if(checkIfTypeIsSimple(val) && checkIfIsSearchedValue(val, filter)) console.log(obj);
+        if(checkIfTypeIsArray(val)) {
+            return filterWith(val, filter);
+        }
+
+        if(checkIfTypeIsObject(val)) return filterWith(val, filter);
+    })
 }
 
-
 const filterWith = (data, filter) => {
-    if(!isLongEnough(filter)) return console.log("too short");
-
-    if (isSimple(data)) {
-        if (stringOf(data).includes(stringOf(filter)))  console.log(data);
+    if(!checkIfHasGivenLength(filter, minFilterTextLength)) {
+        return console.log("too short");
     }
 
+    if (checkIfTypeIsSimple(data) && checkIfIsSearchedValue(data)) console.log(data);
 
-
-    if (isArr(data)) {
-        return data.forEach(
-            (el) => {
-                return filterWith(el, filter)
-            }
-        )
+    if (checkIfTypeIsArray(data)) {
+        return data.forEach((el) => filterWith(el, filter)) 
     }
 
-
-
-    if (isObj(data)) {
-        const vals = handleObject(data);
-
-        vals.filter(([key, value]) => {return filterWith(value, filter);});
+    if (checkIfTypeIsObject(data)) {
+        objectHandler(data, filter);
     }
 }
 
@@ -267,4 +269,4 @@ const data = [
     }
 ]
 
-filterWith(data, "26");
+filterWith(data, "barl");
