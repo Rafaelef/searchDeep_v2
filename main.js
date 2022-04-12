@@ -1,3 +1,104 @@
+
+
+// function searchWith (arr, filter) {
+//     const lCaseFilter = filter.toString().toLowerCase();
+//     const strLen = lCaseFilter.length;
+//     const minLength = 2;
+
+//     const filtered = [];
+
+//     const isObject = val => {
+//         return val instanceof Object;
+//     }
+//     const isArr = val => {
+//         return Array.isArray(val);
+//     }
+//     const objectHandler = (obj) => {
+//         const vals = Object.values(obj);
+        
+//         vals.filter((val) => {
+//             const valText = val.toString().toLowerCase();
+
+//             if (isArr(val)) return arrayHandler(val)
+
+//             if (valText.includes(lCaseFilter)) {
+//                 if(filtered.includes(obj)) return;
+//                 filtered.push(obj);
+//             }
+//         })
+//     }
+//     const arrayHandler = (arr) => {
+//         arr.filter((el) => {
+//             if (isObject(el)) return objectHandler(el);
+
+//             const elText = el.toString().toLowerCase();
+//             if (elText.includes(lCaseFilter)) {
+//                 if(filtered.includes(el)) return;
+//                 filtered.push(el);
+//             }
+            
+//         })
+//     }
+//     const isLongEnough = (stringLength, minLen) => {
+//         if (stringLength < minLen) return false;
+//         else return true;
+//     }
+
+//     if (!isLongEnough(strLen, minLength)){
+//         console.log('too short');
+//         return;
+//     }
+//     arrayHandler(data);
+
+//     console.log(filtered);
+// }
+
+const minLen = 2;
+
+const isLongEnough = (filter) => filter.toString().length >= minLen;
+const isSimple = (obj) => typeof obj !== 'object';
+const isArr = (obj) => Array.isArray(obj);
+const isObj = (obj) => typeof obj === 'object';
+
+
+const stringOf = (str) => str.toString().toLowerCase();
+
+const handleObject = (obj) => {
+    const vals = Object.entries(obj);
+    return vals;
+}
+
+
+const filterWith = (data, filter) => {
+    if(!isLongEnough(filter)) return console.log("too short");
+
+    if (isSimple(data)) {
+        if (stringOf(data).includes(stringOf(filter)))  console.log(data);
+    }
+
+
+
+    if (isArr(data)) {
+        return data.forEach(
+            (el) => {
+                return filterWith(el, filter)
+            }
+        )
+    }
+
+
+
+    if (isObj(data)) {
+        const vals = handleObject(data);
+
+        vals.filter(([key, value]) => {return filterWith(value, filter);});
+    }
+}
+
+
+
+
+
 const data = [
     {
         "_id": "5e985a07feddae7617ac44f6",
@@ -166,59 +267,4 @@ const data = [
     }
 ]
 
-
-
-function searchWith (arr, filter) {
-    const lCaseFilter = filter.toString().toLowerCase();
-    const strLen = lCaseFilter.length;
-    const minLength = 2;
-
-    const filtered = [];
-
-    const isObject = val => {
-        return val instanceof Object;
-    }
-    const isArr = val => {
-        return Array.isArray(val);
-    }
-    const objectHandler = (obj) => {
-        const vals = Object.values(obj);
-        
-        vals.filter((val) => {
-            const valText = val.toString().toLowerCase();
-
-            if (isArr(val)) return arrayHandler(val)
-
-            if (valText.includes(lCaseFilter)) {
-                if(filtered.includes(obj)) return;
-                filtered.push(obj);
-            }
-        })
-    }
-    const arrayHandler = (arr) => {
-        arr.filter((el) => {
-            if (isObject(el)) return objectHandler(el);
-
-            const elText = el.toString().toLowerCase();
-            if (elText.includes(lCaseFilter)) {
-                if(filtered.includes(el)) return;
-                filtered.push(el);
-            }
-            
-        })
-    }
-    const isLongEnough = (stringLength, minLen) => {
-        if (stringLength < minLen) return false;
-        else return true;
-    }
-    
-    if (!isLongEnough(strLen, minLength)){
-        console.log('too short');
-        return;
-    }
-    arrayHandler(data);
-
-    console.log(filtered);
-}
-
-searchWith(data, "fish");
+filterWith(data, "26");
