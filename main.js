@@ -1,100 +1,36 @@
-
-
-// function searchWith (arr, filter) {
-//     const lCaseFilter = filter.toString().toLowerCase();
-//     const strLen = lCaseFilter.length;
-//     const minLength = 2;
-
-//     const filtered = [];
-
-//     const isObject = val => {
-//         return val instanceof Object;
-//     }
-//     const isArr = val => {
-//         return Array.isArray(val);
-//     }
-//     const objectHandler = (obj) => {
-//         const vals = Object.values(obj);
-        
-//         vals.filter((val) => {
-//             const valText = val.toString().toLowerCase();
-
-//             if (isArr(val)) return arrayHandler(val)
-
-//             if (valText.includes(lCaseFilter)) {
-//                 if(filtered.includes(obj)) return;
-//                 filtered.push(obj);
-//             }
-//         })
-//     }
-//     const arrayHandler = (arr) => {
-//         arr.filter((el) => {
-//             if (isObject(el)) return objectHandler(el);
-
-//             const elText = el.toString().toLowerCase();
-//             if (elText.includes(lCaseFilter)) {
-//                 if(filtered.includes(el)) return;
-//                 filtered.push(el);
-//             }
-            
-//         })
-//     }
-//     const isLongEnough = (stringLength, minLen) => {
-//         if (stringLength < minLen) return false;
-//         else return true;
-//     }
-
-//     if (!isLongEnough(strLen, minLength)){
-//         console.log('too short');
-//         return;
-//     }
-//     arrayHandler(data);
-
-//     console.log(filtered);
-// }
-
-
 const minFilterTextLength = 2;
-const checkIfHasGivenLength = (obj, minLen) => obj.toString().length >= minLen;
+const checkIfHasGivenLength = (obj, minFilterLen) => lengthOfString(obj) >= minFilterLen;
+
 const checkIfTypeIsSimple = (obj) => typeof obj !== 'object';
 const checkIfTypeIsArray = (obj) => Array.isArray(obj);
 const checkIfTypeIsObject = (obj) => typeof obj === 'object';
-const convertToString = (obj) => obj += "";
-const checkIfIsSearchedValue = (obj, filter) => convertToString(obj).includes(convertToString(filter));
+
+const convertToString = (el) => el.toString().toLowerCase();
+const stringOf = (el) => convertToString(el);
+const lengthOfString = (el) => stringOf(el).length;
+
+const checkIfIsSearchedValue = (obj, filter) => stringOf(obj).includes(stringOf(filter));
+
 const getObjectValues = (obj) => Object.values(obj);
 
 
-
-// RN only main objects in main array get filtered, if type of value !simple it doesn't work
-
-
-
-const objectHandler = (obj, filter) => {
-    const vals = getObjectValues(obj);
-    vals.forEach((val) =>{
-        if(checkIfTypeIsSimple(val) && checkIfIsSearchedValue(val, filter)) console.log(obj);
-        if(checkIfTypeIsArray(val)) {
-            return filterWith(val, filter);
-        }
-
-        if(checkIfTypeIsObject(val)) return filterWith(val, filter);
-    })
-}
-
 const filterWith = (data, filter) => {
-    if(!checkIfHasGivenLength(filter, minFilterTextLength)) {
-        return console.log("too short");
+    if (!checkIfHasGivenLength(filter, minFilterTextLength)) return "too short";
+
+    if (checkIfTypeIsSimple(data) && checkIfIsSearchedValue(data, filter)) {
+        return console.log(data);
     }
 
-    if (checkIfTypeIsSimple(data) && checkIfIsSearchedValue(data)) console.log(data);
-
-    if (checkIfTypeIsArray(data)) {
-        return data.forEach((el) => filterWith(el, filter)) 
-    }
+    if (checkIfTypeIsArray(data)) return data.forEach((el) => {
+        filterWith(el, filter);
+    });
 
     if (checkIfTypeIsObject(data)) {
-        objectHandler(data, filter);
-    }
+        vals = getObjectValues(data);
+        return vals.forEach(val => {
+            filterWith(val, filter);
+        });
+    };
 }
 
 
@@ -269,4 +205,5 @@ const data = [
     }
 ]
 
-filterWith(data, "barl");
+
+filterWith(data, "24");
